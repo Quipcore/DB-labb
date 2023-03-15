@@ -1,4 +1,6 @@
 import java.sql.*;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Scanner;
 
 public class DB {
@@ -28,25 +30,14 @@ public class DB {
                 "AND L.antal >= 2";
 
         ResultSet rs = con.createStatement().executeQuery(query);
-        while (rs.next()) {
-            String kurskod = rs.getString("kurskod");
-            String ben = rs.getString("benämning");
-            System.out.printf("%s\t\t%s\n", kurskod, ben);
-        }
-        System.out.println();
+        printSet(rs, "kurskod", "benämning");
     }
 
     private static void queryB(Connection con) throws SQLException {
         System.out.println("Query B");
         String query = "SELECT rum,telefon,lnamn FROM Lärare";
         ResultSet rs = con.createStatement().executeQuery(query);
-        while (rs.next()) {
-            String rum = rs.getString("rum");
-            String telefon = rs.getString("telefon");
-            String lnamn = rs.getString("lnamn");
-            System.out.printf("%s\t\t%s\t\t%s\n", rum, telefon, lnamn);
-        }
-        System.out.println();
+        printSet(rs, "rum", "telefon", "lnamn");
     }
 
     private static void queryC(Connection con) throws SQLException {
@@ -68,14 +59,8 @@ public class DB {
 
         ResultSet rs = pstmt.executeQuery();
 
-        while (rs.next()) {
-            String kurskod = rs.getString("kurskod");
-            String ben = rs.getString("benämning");
-            String len = rs.getString("längd");
-            String pris = rs.getString("pris");
-            System.out.printf("%s\t\t%s\t\t%s\t\t%s\n", kurskod, ben, len, pris);
-        }
-        System.out.println();
+        printSet(rs, "kurskod", "benämning", "längd", "pris");
+
     }
 
     private static String getUserString(String prompt) {
@@ -84,5 +69,16 @@ public class DB {
         String usrAns = scan.nextLine();
         scan.close();
         return usrAns.trim();
+    }
+
+    private static void printSet(ResultSet rs, String... cols) throws SQLException {
+        while (rs.next()) {
+            for (String str : cols) {
+                String result = rs.getString(str);
+                System.out.printf("%s\t\t", result);
+            }
+            System.out.println();
+        }
+        System.out.println();
     }
 }
